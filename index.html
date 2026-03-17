@@ -10,74 +10,123 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
-        .blink { animation: blink 1s infinite; }
+        @keyframes shake {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(5px, 5px); }
+            50% { transform: translate(-5px, 0); }
+            75% { transform: translate(5px, -5px); }
+            100% { transform: translate(0, 0); }
+        }
+        .blink { animation: blink 0.8s infinite; }
+        .shake-constant { animation: shake 0.1s infinite; }
         
         #no-button {
-            transition: all 0.2s ease;
+            transition: all 0.15s ease-out;
         }
 
         .terminal-text {
             font-family: 'Courier New', Courier, monospace;
+            scrollbar-width: thin;
+            scrollbar-color: #1e293b #000;
         }
 
         .progress-fill {
-            transition: width 0.5s ease-out;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 0, 0.1);
+            position: absolute;
+            top: 0;
+            z-index: 10;
+            pointer-events: none;
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            from { top: 0; }
+            to { top: 100%; }
         }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+<body class="bg-black text-slate-100 min-h-screen flex flex-col items-center justify-center p-4 overflow-hidden">
+    <div class="scanline"></div>
 
-    <!-- 경고 헤더 -->
-    <div id="warning-banner" class="fixed top-0 w-full bg-red-600 text-white text-center py-2 font-bold z-50">
-        <span class="blink">⚠️ 경고: 대현님의 뇌 및 신체 펌웨어가 만료되었습니다. 즉시 업데이트하십시오. ⚠️</span>
+    <!-- 극강의 경고 헤더 -->
+    <div id="warning-banner" class="fixed top-0 w-full bg-red-600 text-white text-sm py-1 font-bold z-50 flex overflow-hidden whitespace-nowrap">
+        <div class="animate-marquee py-1">
+            <span class="mx-4 blink">🚨 SYSTEM FAILURE IMMINENT: USER 'DAEHYEON' IS CORRUPTED 🚨</span>
+            <span class="mx-4 blink">🚨 즉시 업데이트하지 않으면 대현이의 모든 데이터가 '바보' 모드로 전환됩니다 🚨</span>
+            <span class="mx-4 blink">🚨 경고: 뇌 용량 10% 미만 감지 🚨</span>
+        </div>
     </div>
 
     <!-- 메인 패널 -->
-    <main class="w-full max-w-2xl bg-slate-800 border-2 border-slate-700 rounded-xl p-8 shadow-2xl relative overflow-hidden">
-        <div class="flex items-center space-x-4 mb-8">
-            <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-3xl">🤖</div>
-            <div>
-                <h1 class="text-2xl font-bold tracking-tight">System Update: <span class="text-blue-400">Daehyeon_OS_v2.0</span></h1>
-                <p class="text-slate-400">Current Status: <span class="text-red-500 font-semibold">Critically Outdated</span></p>
+    <main class="w-full max-w-2xl bg-slate-900 border-2 border-red-900 rounded-xl p-8 shadow-[0_0_50px_rgba(255,0,0,0.3)] relative overflow-hidden">
+        <div class="flex items-center justify-between mb-8 border-b border-slate-700 pb-4">
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-500 rounded-full flex items-center justify-center text-3xl shadow-lg shadow-red-500/50">🤡</div>
+                <div>
+                    <h1 class="text-2xl font-black tracking-tighter text-red-500">USER: <span class="text-white">DAEHYEON_GATT-SAENG_FAILED</span></h1>
+                    <p class="text-xs text-slate-500 uppercase font-mono">Build ID: 2024-LAZY-DAEHYEON</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-[10px] text-slate-500 font-mono">SECURITY LEVEL: NONE</div>
+                <div class="text-red-500 font-bold font-mono">CRITICAL ERROR</div>
             </div>
         </div>
 
-        <!-- 로그 출력창 -->
-        <div id="terminal" class="bg-black p-4 rounded-lg mb-8 h-40 overflow-y-auto terminal-text text-sm text-green-400 border border-slate-600">
-            <div>[System] Initializing nagging protocol...</div>
-            <div>[System] Target identified: 대현 (Daehyeon)</div>
-            <div>[Error] Detected 99,999+ missing logic patches.</div>
-            <div>[Warning] Laziness levels exceeding safety limits.</div>
+        <!-- 로그 출력창 (업그레이드됨) -->
+        <div id="terminal" class="bg-black p-4 rounded-lg mb-8 h-56 overflow-y-auto terminal-text text-[11px] text-green-500 border border-slate-800 leading-tight">
+            <div class="text-white font-bold mb-2 underline">[DAEHYEON ANALYSIS SYSTEM INITIALIZED]</div>
+            <div>> Scanning neural network...</div>
+            <div>> [Warning] 핑계 알고리즘이 메인 프로세스를 점유 중...</div>
+            <div>> [Alert] 근성(Spirit) 섹터에서 배드 섹터 다수 발견.</div>
+            <div>> [Error] '내일부터 해야지' 무한 루프 감지됨.</div>
         </div>
 
         <!-- 진행 바 -->
         <div class="mb-8">
-            <div class="flex justify-between mb-2">
-                <span id="progress-status">업데이트 대기 중...</span>
-                <span id="progress-percent">0%</span>
+            <div class="flex justify-between mb-2 text-xs font-mono">
+                <span id="progress-status" class="text-blue-400">UPDATE PENDING...</span>
+                <span id="progress-percent" class="text-blue-400">0.00%</span>
             </div>
-            <div class="w-full bg-slate-700 h-4 rounded-full overflow-hidden">
-                <div id="progress-bar" class="progress-fill bg-blue-500 h-full w-0"></div>
+            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden border border-slate-700">
+                <div id="progress-bar" class="progress-fill bg-gradient-to-r from-blue-600 to-purple-500 h-full w-0"></div>
             </div>
         </div>
 
         <!-- 버튼 영역 -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button id="yes-button" onclick="startUpdate()" class="px-10 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transform active:scale-95 transition-all shadow-lg">
-                지금 업데이트 설치
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <button id="yes-button" onclick="startUpdate()" class="group relative px-12 py-5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-full transform active:scale-95 transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)] overflow-hidden">
+                <span class="relative z-10">지금 당장 갱생하기</span>
+                <div class="absolute inset-0 bg-white/20 translate-y-12 group-hover:translate-y-0 transition-transform"></div>
             </button>
-            <button id="no-button" class="px-10 py-4 bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold rounded-lg relative">
-                나중에 하기
+            <button id="no-button" class="px-8 py-3 bg-slate-800 border border-slate-700 text-slate-500 font-bold rounded-lg hover:text-red-500 hover:border-red-500 transition-colors">
+                평생 이렇게 살기
             </button>
+        </div>
+
+        <div class="mt-8 text-center">
+            <p class="text-[10px] text-slate-600 font-mono">© 2024 DAEHYEON MANAGEMENT SYSTEM. NO RIGHTS RESERVED.</p>
         </div>
     </main>
 
-    <!-- 커스텀 모달 (알림용) -->
-    <div id="modal-overlay" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[100] p-4">
-        <div class="bg-slate-800 border border-slate-700 p-6 rounded-xl max-w-sm w-full text-center">
-            <h2 id="modal-title" class="text-xl font-bold mb-4">알림</h2>
-            <p id="modal-content" class="text-slate-300 mb-6"></p>
-            <button onclick="closeModal()" class="w-full py-2 bg-blue-600 rounded-lg font-bold">확인</button>
+    <!-- 킹받는 레이어 (가끔 나타남) -->
+    <div id="glitch-overlay" class="fixed inset-0 pointer-events-none bg-red-500/10 hidden"></div>
+
+    <!-- 커스텀 모달 -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-[100] p-4">
+        <div class="bg-slate-900 border-2 border-red-600 p-8 rounded-2xl max-w-sm w-full text-center shadow-[0_0_100px_rgba(220,38,38,0.5)]">
+            <div class="text-6xl mb-4">😱</div>
+            <h2 id="modal-title" class="text-2xl font-black text-white mb-4">치명적 오류!</h2>
+            <p id="modal-content" class="text-slate-400 mb-8 leading-relaxed"></p>
+            <button onclick="closeModal()" class="w-full py-4 bg-red-600 hover:bg-red-500 text-white rounded-xl font-black transition-all transform active:scale-95">
+                잘못했습니다...
+            </button>
         </div>
     </div>
 
@@ -89,18 +138,32 @@
         const progressStatus = document.getElementById('progress-status');
         const modalOverlay = document.getElementById('modal-overlay');
         const modalContent = document.getElementById('modal-content');
+        const glitchOverlay = document.getElementById('glitch-overlay');
 
-        const logs = [
-            "최신 게으름 방지 패치 다운로드 중...",
-            "대현이의 핑계 데이터베이스 최적화 중...",
-            "열정(Passion) 드라이버 재설치 중...",
-            "동기부여 모듈 7.0 버전 적용 중...",
-            "긴급: '아무것도 하기 싫음' 프로세스 강제 종료 중...",
-            "새벽 3시 유튜브 시청 금지 코드 삽입 중...",
-            "갓생 살기 플러그인 로딩 완료."
+        const naggingLogs = [
+            "분석 중: 어제 먹은 야식 칼로리 정산 중...",
+            "경고: 대현이의 집중력 유지 시간 3초로 판명됨.",
+            "수정 중: '아무것도 하기 싫음' 바이러스 격리 중...",
+            "감지됨: 대현이의 통장 잔고가 눈물을 흘리고 있습니다.",
+            "분석 중: 유튜브 알고리즘 의존도 98% 돌파.",
+            "패치 중: 대현이의 '귀찮음' 모듈 삭제 시도 중... (거부됨)",
+            "알림: 대현이의 연애 세포가 동면 상태에 진입했습니다.",
+            "치명적 오류: 대현이의 열정(Passion.exe) 파일이 손상되었습니다.",
+            "정보: 대현이의 뇌는 현재 '누워있고 싶다'는 생각으로 가득 차 있습니다.",
+            "동기화 중: 대현이의 부모님의 기대치와 현재 상태 대조 중... (불일치)",
+            "최적화 중: 침대와의 물아일체 현상 해제 중...",
+            "로그 분석: '내일부터'라는 단어를 오늘만 127번 사용함.",
+            "스캐닝: 대현이의 거북목 각도 45도 감지.",
+            "업데이트: 갓생(God-Saeng) 패키지 압축 푸는 중... (용량 부족)",
+            "긴급: 대현이의 현실 도피 엔진 과열 중!"
         ];
 
-        // 1. 도망가는 '나중에 하기' 버튼
+        const noTexts = [
+            "진심이야?", "후회할 텐데?", "이걸 안 한다고?", "대현아 정신 차려", "평생 바보로 살래?", 
+            "응 안돼", "클릭해봐 ㅋㅋ", "못 누르쥬?", "킹받쥬?", "어딜 도망가"
+        ];
+
+        // 1. 더 킹받게 도망가는 버튼
         noBtn.addEventListener('mouseover', () => {
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
@@ -109,39 +172,52 @@
             noBtn.style.left = `${x}px`;
             noBtn.style.top = `${y}px`;
             
-            addLog("[Critical] 업데이트 회피 시도 감지됨. 거부 권한이 없습니다.");
+            // 텍스트 변경
+            noBtn.innerText = noTexts[Math.floor(Math.random() * noTexts.length)];
+            
+            // 화면 깜빡임 효과
+            glitchOverlay.style.display = 'block';
+            setTimeout(() => glitchOverlay.style.display = 'none', 50);
+
+            addLog(`[System] 사용자 '대현'의 거부 시도 무력화됨. (사유: 근성 부족)`, "text-red-400");
         });
 
-        noBtn.addEventListener('click', () => {
-            showModal("포기하세요. 업데이트만이 살길입니다.");
-        });
-
-        // 2. 터미널 로그 추가 함수
-        function addLog(text) {
+        // 2. 터미널 로그 추가 함수 (색상 추가)
+        function addLog(text, colorClass = "text-green-500") {
             const div = document.createElement('div');
-            div.textContent = `[Log] ${text}`;
+            div.className = colorClass;
+            div.textContent = `> ${text}`;
             terminal.appendChild(div);
             terminal.scrollTop = terminal.scrollHeight;
         }
 
-        // 3. 업데이트 시작
+        // 3. 업데이트 시작 (중간에 멈추거나 렉 걸리는 척 추가)
         let isUpdating = false;
         function startUpdate() {
             if (isUpdating) return;
             isUpdating = true;
             
-            document.getElementById('yes-button').disabled = true;
-            document.getElementById('yes-button').innerText = "업데이트 중...";
-            progressStatus.innerText = "업데이트 설치 중...";
-
+            const yesBtn = document.getElementById('yes-button');
+            yesBtn.disabled = true;
+            yesBtn.classList.add('opacity-50');
+            progressStatus.innerText = "CRITICAL UPDATE IN PROGRESS...";
+            
             let progress = 0;
             const interval = setInterval(() => {
-                progress += Math.floor(Math.random() * 5) + 1;
+                // 랜덤한 진행률 증가
+                let increment = Math.random() * 2;
                 
-                if (progress >= 99 && progress < 100) {
-                    // 99%에서 고의적으로 느려짐
-                    addLog("거의 다 됐습니다... 대현이의 의지를 확인 중...");
+                // 99%에서 아주 오랫동안 멈춤
+                if (progress >= 99 && progress < 99.9) {
+                    increment = 0.01;
+                    if (Math.random() > 0.9) {
+                        addLog("데이터 충돌 발생! 대현이의 게으름이 너무 강력합니다!", "text-red-500");
+                        document.querySelector('main').classList.add('shake-constant');
+                        setTimeout(() => document.querySelector('main').classList.remove('shake-constant'), 500);
+                    }
                 }
+
+                progress += increment;
 
                 if (progress >= 100) {
                     progress = 100;
@@ -150,18 +226,20 @@
                 }
 
                 progressBar.style.width = `${progress}%`;
-                progressPercent.innerText = `${progress}%`;
+                progressPercent.innerText = `${progress.toFixed(2)}%`;
                 
-                if (progress % 10 === 0) {
-                    addLog(logs[Math.floor(Math.random() * logs.length)]);
+                // 자주 로그 추가
+                if (Math.random() > 0.85) {
+                    addLog(naggingLogs[Math.floor(Math.random() * naggingLogs.length)]);
                 }
-            }, 300);
+            }, 100);
         }
 
         function completeUpdate() {
-            addLog("업데이트 완료! 대현 v2.0이 준비되었습니다.");
-            progressStatus.innerText = "설치 완료: 대현 v2.0";
-            showModal("대현 v2.0 업데이트가 완료되었습니다. 이제 갓생을 사세요.");
+            addLog("업데이트 성공! 대현 v2.0 패치가 완료되었습니다.", "text-blue-400 font-bold");
+            addLog("경고: 재부팅 시 다시 '바보'가 될 확률이 99%입니다.");
+            progressStatus.innerText = "INSTALLATION COMPLETE: DAEHYEON 2.0";
+            showModal("대현 v2.0 업데이트가 완료되었습니다.\n\n이제 거북목을 펴고,\n침대에서 일어나,\n갓생을 사십시오.");
         }
 
         // 4. 모달 제어
@@ -171,11 +249,18 @@
         }
 
         function closeModal() {
+            // 모달을 닫아도 다시 업데이트하라고 띄움
             modalOverlay.style.display = 'none';
+            addLog("시스템 종료를 거부했습니다. 대현이는 평생 업데이트 중입니다.", "text-yellow-400");
         }
 
-        // 초기 로그
-        setTimeout(() => addLog("시스템 준비 완료. 사용자 대현을 기다리는 중..."), 1000);
+        // 초기 로그 폭발
+        let initialCount = 0;
+        const initInterval = setInterval(() => {
+            addLog(naggingLogs[initialCount % naggingLogs.length]);
+            initialCount++;
+            if(initialCount > 10) clearInterval(initInterval);
+        }, 200);
     </script>
 </body>
 </html>
